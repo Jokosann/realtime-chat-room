@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob';
 import { prisma } from './prisma';
 
 export const getUserById = async (id: string) => {
@@ -9,4 +10,13 @@ export const getUserById = async (id: string) => {
     } catch (error) {
         throw new Error('Failed to fetch data');
     }
+};
+
+export const urlPath = async (image: File) => {
+    const { url } = await put(image.name, image, {
+        access: 'public',
+        multipart: true,
+    });
+
+    return url;
 };
