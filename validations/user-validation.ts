@@ -14,3 +14,16 @@ export const createUserValidation = z.object({
             message: '*Image must less than 5MB',
         }),
 });
+
+export const updateUserValidation = z.object({
+    username: z.string().min(1).max(100),
+    image: z
+        .instanceof(File)
+        .refine((file) => file.size === 0 || file.type.startsWith('image/'), {
+            message: 'Only images are allowed',
+        })
+        .refine((file) => file.size < 4000000, {
+            message: 'Image must less than 4MB',
+        })
+        .optional(),
+});
