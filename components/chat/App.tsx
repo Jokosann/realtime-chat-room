@@ -9,11 +9,52 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useClientSession } from '@/lib/session';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
+import { v4 as uuid } from 'uuid';
+import { getDatabase, onValue, ref, serverTimestamp, set } from 'firebase/database';
+import { IMessage, IRawMessage } from '@/types/chat-message';
+import app from '@/lib/firebase';
 
 export default function App() {
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reply, setReply] = useState({ isReply: false, name: '' });
+
   const user = useClientSession();
   const router = useRouter();
+
+  const userData = user?.data?.user;
+
+  const db = getDatabase(app);
+
+  function sendMessage(text: string) {
+    const id = uuid();
+    const messageRef = ref(db, `message/${id}`);
+
+    set(messageRef, {
+      id: id,
+      name: userData?.name,
+      image: userData?.image,
+      text,
+      created_at: serverTimestamp(),
+      is_replay: reply.isReply,
+      reply_to: reply.name,
+    });
+  }
+
+  useEffect(() => {
+    const messageRef = ref(db, 'message');
+    onValue(messageRef, (snapshot) => {
+      const data: IRawMessage = snapshot.val();
+
+      const transformMessage: IMessage[] = Object.entries(data)
+        .map(([id, value]) => ({
+          id,
+          ...value,
+        }))
+        .sort((a, b) => a.created_at - b.created_at);
+      setMessages(transformMessage);
+    });
+  }, [db]);
 
   useEffect(() => {
     if (user.status === 'authenticated') {
@@ -24,10 +65,12 @@ export default function App() {
     }
   }, [router, user]);
 
+  // console.log(messages);
+
   return (
     <section>
       <div className="max-w-4xl m-auto p-4">
-        {user.data?.user && (
+        {userData && (
           <div className="mb-6">
             <HeaderProfile />
           </div>
@@ -44,13 +87,13 @@ export default function App() {
         <div className="mb-6">
           <HeaderTitle />
         </div>
-        <ChatList />
-        {user.data?.user && (
+        <ChatList messages={messages} />
+        {userData && (
           <div className="py-4">
-            <InputMessage />
+            <InputMessage send={sendMessage} />
           </div>
         )}
-        {!user.data?.user && (
+        {!userData && (
           <div className="w-full flex justify-center py-4">
             <CreateUserModal />
           </div>

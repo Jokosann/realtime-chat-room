@@ -2,14 +2,19 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/shadcn/ui/avatar';
 import Reply from './Reply';
+import { IMessage } from '@/types/chat-message';
 
-export default function ChatItemRight() {
+interface IpropsChat {
+  chat: IMessage;
+}
+
+export default function ChatItemRight({ chat }: IpropsChat) {
   return (
     <div className="w-full flex gap-3">
       <div className="w-full ml-4">
         <div className="flex gap-3 items-center justify-end mb-2">
           <span className="text-slate-400 text-xs">2 days ago</span>
-          <p className="text-sm">Samsul Hadi</p>
+          <p className="text-sm">chat.name</p>
         </div>
         <div className="flex gap-2 justify-end">
           <div className="w-20 flex items-center justify-end">
@@ -18,14 +23,12 @@ export default function ChatItemRight() {
             </div>
           </div>
           <div className="bg-sky-500 p-2 rounded-tl-xl rounded-br-xl rounded-bl-xl">
-            <p className="text-base font-default text-neutral-100">
-              Selamat datang semuanya di web saya ini
-            </p>
+            <p className="text-base font-default text-neutral-100">{chat.text}</p>
           </div>
         </div>
       </div>
       <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" />
+        <AvatarImage src={chat.image} className="object-cover" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </div>
