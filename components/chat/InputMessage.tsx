@@ -3,13 +3,14 @@
 import { Button } from '@/components/shadcn/ui/button';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { Textarea } from '@/components/shadcn/ui/textarea';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 interface IPropsButtonSend {
   send: (text: string) => void;
+  setIsScroll: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function ButtonSend({ send }: IPropsButtonSend) {
+export default function ButtonSend({ send, setIsScroll }: IPropsButtonSend) {
   const [text, setText] = useState('');
 
   return (
@@ -25,6 +26,7 @@ export default function ButtonSend({ send }: IPropsButtonSend) {
           if (text === '' || text.trim() === '') return false;
           send(text);
           setText('');
+          setIsScroll(false);
         }}
       >
         <PaperPlaneIcon className="-rotate-45" />

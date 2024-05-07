@@ -1,22 +1,29 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+
 import { ChatList } from '@/components/chat//ChatList';
 import InputMessage from '@/components/chat/InputMessage';
 import HeaderProfile from '@/components/chat/HeaderProfile';
 import HeaderTitle from '@/components/chat/HeaderTitle';
 import { CreateUserModal } from '@/components/chat/CreateUserModal';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useClientSession } from '@/lib/session';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
-import { v4 as uuid } from 'uuid';
+
+import app from '@/lib/firebase';
 import { getDatabase, onValue, ref, serverTimestamp, set } from 'firebase/database';
 import { IMessage, IRawMessage } from '@/types/chat-message';
-import app from '@/lib/firebase';
+import { v4 as uuid } from 'uuid';
+import ChatLoading from './ChatLoading';
 
 export default function App() {
+  const chatRef = useRef<HTMLDivElement | null>(null);
+
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [chatLoading, setChatLoading] = useState(true);
+  const [isScroll, setIsScroll] = useState(false);
   const [reply, setReply] = useState({ isReply: false, name: '' });
 
   const user = useClientSession();
@@ -52,9 +59,42 @@ export default function App() {
           ...value,
         }))
         .sort((a, b) => a.created_at - b.created_at);
+
       setMessages(transformMessage);
+      setChatLoading(false);
     });
   }, [db]);
+
+  useEffect(() => {
+    if (chatRef.current && !isScroll) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      console.log('scroll');
+    }
+  }, [messages, isScroll]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (chatRef.current) {
+        const isScrollToBottom =
+          chatRef.current.scrollHeight - chatRef.current.clientHeight <= chatRef.current.scrollTop + 5;
+
+        if (isScrollToBottom) {
+          console.log('false');
+          setIsScroll(false);
+        } else {
+          console.log('true');
+          setIsScroll(true);
+        }
+      }
+    };
+
+    chatRef.current?.addEventListener('scroll', handleScroll);
+    const currentChatRef = chatRef.current;
+
+    return () => {
+      currentChatRef?.removeEventListener('scroll', handleScroll);
+    };
+  }, [messages]);
 
   useEffect(() => {
     if (user.status === 'authenticated') {
@@ -64,8 +104,6 @@ export default function App() {
       setLoading(false);
     }
   }, [router, user]);
-
-  // console.log(messages);
 
   return (
     <section>
@@ -87,10 +125,16 @@ export default function App() {
         <div className="mb-6">
           <HeaderTitle />
         </div>
-        <ChatList messages={messages} />
+        {chatLoading ? (
+          <div className="w-full h-[60vh] flex justify-center items-center">
+            <ChatLoading />
+          </div>
+        ) : (
+          <ChatList messages={messages} ref={chatRef} />
+        )}
         {userData && (
           <div className="py-4">
-            <InputMessage send={sendMessage} />
+            <InputMessage setIsScroll={setIsScroll} send={sendMessage} />
           </div>
         )}
         {!userData && (

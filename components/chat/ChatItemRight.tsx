@@ -14,7 +14,7 @@ export default function ChatItemRight({ chat }: IpropsChat) {
       <div className="w-full ml-4">
         <div className="flex gap-3 items-center justify-end mb-2">
           <span className="text-slate-400 text-xs">2 days ago</span>
-          <p className="text-sm">chat.name</p>
+          <p className="text-sm">{chat.name}</p>
         </div>
         <div className="flex gap-2 justify-end">
           <div className="w-20 flex items-center justify-end">
