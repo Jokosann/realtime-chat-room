@@ -4,7 +4,6 @@ import { Button } from '@/components/shadcn/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/shadcn/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/shadcn/ui/popover';
 import { DragHandleDots2Icon, ExitIcon, UpdateIcon } from '@radix-ui/react-icons';
-import Verified from './Verified';
 import { signOut } from 'next-auth/react';
 import { useClientSession } from '@/lib/session';
 import { UpdateUserModal } from './UpdateUserModal';
@@ -23,7 +22,6 @@ export default function HeaderProfile() {
         <div>
           <div className="flex gap-1 items-center">
             <p className="text-base font-medium">{name}</p>
-            <Verified />
           </div>
           <p className="text-xs">ID : {user_id}</p>
         </div>

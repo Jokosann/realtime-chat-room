@@ -16,6 +16,7 @@ import { getDatabase, onValue, ref, serverTimestamp, set } from 'firebase/databa
 import { IMessage, IRawMessage } from '@/types/chat-message';
 import { v4 as uuid } from 'uuid';
 import ChatLoading from './ChatLoading';
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 export default function App() {
   const chatRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +25,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [chatLoading, setChatLoading] = useState(true);
   const [isScroll, setIsScroll] = useState(false);
+  const [isReplyTo, setIsReplyTo] = useState(false);
   const [reply, setReply] = useState({ isReply: false, name: '' });
 
   const user = useClientSession();
@@ -35,21 +37,27 @@ export default function App() {
 
   function sendMessage(text: string) {
     const id = uuid();
-    const messageRef = ref(db, `message/${id}`);
+    const messageRef = ref(db, `messages/${id}`);
 
     set(messageRef, {
       id: id,
       name: userData?.name,
       image: userData?.image,
       text,
-      created_at: serverTimestamp(),
+      created_at: new Date().toISOString(),
       is_replay: reply.isReply,
       reply_to: reply.name,
     });
+
+    setReply({ isReply: false, name: '' });
+  }
+
+  function handleCenselReply() {
+    setReply({ isReply: false, name: '' });
   }
 
   useEffect(() => {
-    const messageRef = ref(db, 'message');
+    const messageRef = ref(db, 'messages');
     onValue(messageRef, (snapshot) => {
       const data: IRawMessage = snapshot.val();
 
@@ -58,7 +66,11 @@ export default function App() {
           id,
           ...value,
         }))
-        .sort((a, b) => a.created_at - b.created_at);
+        .sort((a, b) => {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateA.getTime() - dateB.getTime();
+        });
 
       setMessages(transformMessage);
       setChatLoading(false);
@@ -68,7 +80,6 @@ export default function App() {
   useEffect(() => {
     if (chatRef.current && !isScroll) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
-      console.log('scroll');
     }
   }, [messages, isScroll]);
 
@@ -79,10 +90,8 @@ export default function App() {
           chatRef.current.scrollHeight - chatRef.current.clientHeight <= chatRef.current.scrollTop + 5;
 
         if (isScrollToBottom) {
-          console.log('false');
           setIsScroll(false);
         } else {
-          console.log('true');
           setIsScroll(true);
         }
       }
@@ -126,14 +135,28 @@ export default function App() {
           <HeaderTitle />
         </div>
         {chatLoading ? (
-          <div className="w-full h-[60vh] flex justify-center items-center">
+          <div
+            className={`w-full ${
+              userData ? 'h-[60vh] md:h-[65vh]' : 'h-[70vh] md:h-[75vh]'
+            } flex justify-center items-center`}
+          >
             <ChatLoading />
           </div>
         ) : (
-          <ChatList messages={messages} ref={chatRef} />
+          <ChatList messages={messages} ref={chatRef} setReply={setReply} />
         )}
         {userData && (
-          <div className="py-4">
+          <div className="space-y-3">
+            {reply.isReply && (
+              <div className="w-fit px-3 py-1 shadow-sm rounded-md bg-neutral-100 flex gap-2">
+                <p className="text-xs">
+                  Replying to <span className="text-teal-500">@{reply.name}</span>
+                </p>
+                <div className="w-4 h-4 p-1 bg-white rounded-full grid place-content-center shadow-sm">
+                  <Cross2Icon className="cursor-pointer w-3 h-3" onClick={handleCenselReply} />
+                </div>
+              </div>
+            )}
             <InputMessage setIsScroll={setIsScroll} send={sendMessage} />
           </div>
         )}

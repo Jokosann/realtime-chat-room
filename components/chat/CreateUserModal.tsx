@@ -36,7 +36,7 @@ export function CreateUserModal() {
   const ButtonSend = () => {
     const { pending } = useFormStatus();
     return (
-      <Button disabled={pending} type="submit">
+      <Button disabled={pending} type="submit" className="w-full">
         {pending ? <Spinner /> : 'create'}
       </Button>
     );

@@ -10,8 +10,8 @@ export const createUserValidation = z.object({
     .refine((file) => file.size === 0 || file.type.startsWith('image/'), {
       message: '*Only images are allowed',
     })
-    .refine((file) => file.size < 5000000, {
-      message: '*Image must less than 5MB',
+    .refine((file) => file.size < 3000000, {
+      message: '*Image must less than 3MB',
     }),
 });
 
@@ -22,8 +22,8 @@ export const updateUserValidation = z.object({
     .refine((file) => file.size === 0 || file.type.startsWith('image/'), {
       message: 'Only images are allowed',
     })
-    .refine((file) => file.size < 4000000, {
-      message: 'Image must less than 4MB',
+    .refine((file) => file.size < 3000000, {
+      message: 'Image must less than 3MB',
     })
     .optional(),
 });
