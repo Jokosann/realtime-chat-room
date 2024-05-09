@@ -60,7 +60,7 @@ export function UpdateUserModal() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost" className="text-red-500 hover:text-red-500 w-fit">
-          <span className="text-sm">Update Profile</span> <UpdateIcon className="ml-2" />
+          <span className="text-sm">update profile</span> <UpdateIcon className="ml-2" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg m-auto">

@@ -20,10 +20,10 @@ export const updateUserValidation = z.object({
   image: z
     .instanceof(File)
     .refine((file) => file.size === 0 || file.type.startsWith('image/'), {
-      message: 'Only images are allowed',
+      message: '*Only images are allowed',
     })
     .refine((file) => file.size < 3000000, {
-      message: 'Image must less than 3MB',
+      message: '*Image must less than 3MB',
     })
     .optional(),
 });

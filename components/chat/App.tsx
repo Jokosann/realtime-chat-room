@@ -7,7 +7,6 @@ import InputMessage from '@/components/chat/InputMessage';
 import HeaderProfile from '@/components/chat/HeaderProfile';
 import HeaderTitle from '@/components/chat/HeaderTitle';
 import { CreateUserModal } from '@/components/chat/CreateUserModal';
-import { useRouter } from 'next/navigation';
 import { useClientSession } from '@/lib/session';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
 
@@ -25,11 +24,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [chatLoading, setChatLoading] = useState(true);
   const [isScroll, setIsScroll] = useState(false);
-  const [isReplyTo, setIsReplyTo] = useState(false);
   const [reply, setReply] = useState({ isReply: false, name: '' });
 
   const user = useClientSession();
-  const router = useRouter();
 
   const userData = user?.data?.user;
 
@@ -107,16 +104,15 @@ export default function App() {
 
   useEffect(() => {
     if (user.status === 'authenticated') {
-      router.refresh();
       setLoading(false);
     } else {
       setLoading(false);
     }
-  }, [router, user]);
+  }, [user]);
 
   return (
     <section>
-      <div className="max-w-4xl m-auto p-4">
+      <div className="max-w-3xl m-auto p-4">
         {userData && (
           <div className="mb-6">
             <HeaderProfile />

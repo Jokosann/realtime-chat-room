@@ -28,7 +28,7 @@ export const ChatList = forwardRef<HTMLDivElement, IPropsChatList>(({ messages, 
       <div
         ref={ref}
         className={`no-scrollbar mb-4 w-full ${
-          user.data?.user ? 'h-[60vh] md:h-[65vh]' : 'h-[70vh] md:h-[75vh]'
+          user.data?.user ? 'h-[58vh] md:h-[63vh]' : 'h-[63vh] md:h-[68vh]'
         } space-y-6 overflow-y-auto scroll-smooth border-b border-neutral-200 pb-2`}
       >
         {messages?.map((chat: IMessage) => (

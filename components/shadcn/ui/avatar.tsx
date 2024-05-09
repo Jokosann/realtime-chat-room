@@ -25,7 +25,7 @@ const AvatarImage = React.forwardRef<
 ));
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 
-const AvatarFallback = React.forwardRef<
+const AvatarFallback: any = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
 >(({ className, ...props }, ref) => (

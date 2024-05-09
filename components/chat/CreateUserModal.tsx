@@ -20,6 +20,7 @@ import Image from 'next/image';
 import Spinner from './Spinner';
 import { createUser } from '@/lib/action';
 import { useClientSession } from '@/lib/session';
+import { Toaster, toast } from 'sonner';
 
 export function CreateUserModal() {
   const [image, setImage] = useState<string | undefined>(undefined);
@@ -44,6 +45,7 @@ export function CreateUserModal() {
 
   useEffect(() => {
     if (state?.message === 'success') {
+      toast.success('Create profile success');
       if (formRef.current) {
         formRef.current.reset();
         setImage(undefined);
@@ -117,7 +119,7 @@ export function CreateUserModal() {
                             <span className="font-semibold">Click to chosse</span> your profile here
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 text-center mx-auto">
-                            PNG, JPG or JPEG (MAX. 800x400px)
+                            PNG, JPG or JPEG (MAX. 3MB)
                           </p>
                         </div>
                         <input
