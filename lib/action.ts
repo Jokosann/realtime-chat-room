@@ -1,7 +1,7 @@
 import { createUserValidation, updateUserValidation } from '@/validations/user-validation';
 import { signIn } from 'next-auth/react';
 import { upload } from '@vercel/blob/client';
-import { getRandomNumber } from '@/services/user-service';
+import { v4 as uuid } from 'uuid';
 
 export const createUser = async (prevState: unknown, formData: FormData) => {
   const validateFields = createUserValidation.safeParse(Object.fromEntries(formData.entries()));
@@ -23,13 +23,14 @@ export const createUser = async (prevState: unknown, formData: FormData) => {
       username: username,
       image: newBlob.url,
     });
+
     return { message: 'success' };
   } catch (error) {
     return { message: error };
   }
 };
 
-export const updateUser = async (img: string, prevState: unknown, formData: FormData) => {
+export const updateUser = async (data: any, prevState: unknown, formData: FormData) => {
   const validateFields = updateUserValidation.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validateFields.success) {
@@ -41,7 +42,7 @@ export const updateUser = async (img: string, prevState: unknown, formData: Form
   let imagePath;
 
   if (!image || image.size <= 0) {
-    imagePath = img;
+    imagePath = data.img;
   } else {
     const newBlob = await upload(image.name, image, {
       access: 'public',
@@ -55,6 +56,7 @@ export const updateUser = async (img: string, prevState: unknown, formData: Form
       redirect: false,
       username: username,
       image: imagePath,
+      id: data.id,
     });
     return { message: 'success' };
   } catch (error) {
@@ -62,11 +64,12 @@ export const updateUser = async (img: string, prevState: unknown, formData: Form
   }
 };
 
-export const createUserSession = async (data: { username: string; image: string }) => {
+export const createUserSession = async (data: { username: string; image: string; id?: string }) => {
   const user = {
-    user_id: getRandomNumber(8),
-    username: data.username,
-    image: data.image,
+    id: data.id || uuid(),
+    username: data?.username,
+    image: data?.image,
   };
+
   return user;
 };

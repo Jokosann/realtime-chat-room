@@ -6,6 +6,7 @@ export interface IMessage {
   created_at: string;
   is_replay: boolean;
   reply_to: string;
+  user_id: string;
 }
 
 export interface IRawMessage {

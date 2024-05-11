@@ -22,9 +22,10 @@ import { useState } from 'react';
 
 interface IpropsChat {
   chat: IMessage;
+  user: any;
 }
 
-export default function ChatItemRight({ chat }: IpropsChat) {
+export default function ChatItemRight({ chat, user }: IpropsChat) {
   const date = formatDistanceToNow(new Date(chat.created_at), { addSuffix: true });
   const regex = /about\.?/g;
   const time = date.replace(regex, '');

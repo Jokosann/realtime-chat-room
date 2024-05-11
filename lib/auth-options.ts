@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { createUserSession } from './action';
@@ -19,6 +20,7 @@ export const authOPtions: NextAuthOptions = {
         const data = credentials as {
           username: string;
           image: string;
+          id?: string;
         };
         const user: any = await createUserSession(data);
         return user;
@@ -30,7 +32,7 @@ export const authOPtions: NextAuthOptions = {
       if (account?.provider === 'credentials') {
         token.name = user.username;
         token.picture = user.image;
-        token.user_id = user.user_id;
+        token.id = user.id;
       }
       return token;
     },
@@ -41,8 +43,8 @@ export const authOPtions: NextAuthOptions = {
       if ('picture' in token) {
         session.user.image = token.picture;
       }
-      if ('user_id' in token) {
-        session.user.user_id = token.user_id;
+      if ('id' in token) {
+        session.user.id = token.id;
       }
       return session;
     },

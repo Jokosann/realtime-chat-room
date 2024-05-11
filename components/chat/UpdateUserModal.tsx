@@ -22,12 +22,13 @@ import { updateUser } from '@/lib/action';
 import Spinner from './Spinner';
 
 export function UpdateUserModal() {
-  const user = useClientSession();
+  const user: any = useClientSession();
 
   const img = user?.data?.user?.image;
+  const id = user?.data?.user?.id;
   const name = user?.data?.user?.name;
 
-  const [state, formAction] = useFormState(updateUser.bind(null, `${img}`), null);
+  const [state, formAction] = useFormState(updateUser.bind(null, { img, id }), null);
   const [image, setImage] = useState<string | undefined>(img || undefined);
   const [nameValue, setNameValue] = useState<string>(name || '' + '');
   const formRef = useRef<HTMLFormElement | null>(null);

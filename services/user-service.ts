@@ -9,12 +9,3 @@ export function getRandomNumber(maxLength: number) {
 
   return result;
 }
-
-// function getFirstLetterName(name: string) {
-//   if (name !== '') {
-//     const firstLetter = name.split(' ').map((i: string) => i.charAt(0).toLowerCase());
-//     return firstLetter[0];
-//   } else {
-//     return null;
-//   }
-// }

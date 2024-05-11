@@ -19,7 +19,7 @@ interface IPropsChatList {
 }
 
 export const ChatList = forwardRef<HTMLDivElement, IPropsChatList>(({ messages, setReply }, ref) => {
-  const user = useClientSession();
+  const user: any = useClientSession();
 
   if (messages.length < 1) return null;
 
@@ -33,8 +33,8 @@ export const ChatList = forwardRef<HTMLDivElement, IPropsChatList>(({ messages, 
       >
         {messages?.map((chat: IMessage) => (
           <div key={chat.id}>
-            {user?.data?.user?.name === chat.name ? (
-              <ChatItemRight chat={chat} />
+            {user?.data?.user?.id === chat.user_id ? (
+              <ChatItemRight chat={chat} user={user} />
             ) : (
               <ChatItemLeft chat={chat} setReply={setReply} />
             )}

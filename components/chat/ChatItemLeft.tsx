@@ -9,12 +9,7 @@ import { useClientSession } from '@/lib/session';
 
 interface IPropsChat {
   chat: IMessage;
-  setReply: Dispatch<
-    SetStateAction<{
-      isReply: boolean;
-      name: string;
-    }>
-  >;
+  setReply: Dispatch<SetStateAction<{ isReply: boolean; name: string }>>;
 }
 
 export default function ChatItemLeft({ chat, setReply }: IPropsChat) {

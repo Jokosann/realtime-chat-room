@@ -11,7 +11,7 @@ import { useClientSession } from '@/lib/session';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
 
 import app from '@/lib/firebase';
-import { getDatabase, onValue, ref, serverTimestamp, set } from 'firebase/database';
+import { getDatabase, onValue, ref, set } from 'firebase/database';
 import { IMessage, IRawMessage } from '@/types/chat-message';
 import { v4 as uuid } from 'uuid';
 import ChatLoading from './ChatLoading';
@@ -27,8 +27,7 @@ export default function App() {
   const [reply, setReply] = useState({ isReply: false, name: '' });
 
   const user = useClientSession();
-
-  const userData = user?.data?.user;
+  const userData: any = user?.data?.user;
 
   const db = getDatabase(app);
 
@@ -38,6 +37,7 @@ export default function App() {
 
     set(messageRef, {
       id: id,
+      user_id: userData?.id,
       name: userData?.name,
       image: userData?.image,
       text,

@@ -21,7 +21,7 @@ import {
 
 export default function HeaderProfile() {
   const session = useClientSession();
-  const { image, name, user_id }: any = session?.data?.user;
+  const { image, name, id }: any = session?.data?.user;
 
   return (
     <div className="w-full flex justify-between items-center">
@@ -34,7 +34,7 @@ export default function HeaderProfile() {
           <div className="flex gap-1 items-center">
             <p className="text-base font-medium">{name}</p>
           </div>
-          <p className="text-xs">ID : {user_id}</p>
+          <p className="text-xs">ID : {id}</p>
         </div>
       </div>
       <Popover>
